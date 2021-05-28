@@ -316,8 +316,16 @@ class TickStore(object):
 
         column_dtypes = {}
         ticks_read = 0
-        data_coll = self._collection.with_options(read_preference=self._read_preference(allow_secondary))
-        for b in data_coll.find(query, projection=projection).sort([(START, pymongo.ASCENDING)],):
+        data_coll = self._collection.with_options(
+            read_preference=self._read_preference(allow_secondary))
+
+        if _target_tick_count < 0:
+            sort_dirt = pymongo.DESCENDING
+            _target_tick_count = - _target_tick_count
+        else:
+            sort_dirt = pymongo.ASCENDING
+
+        for b in data_coll.find(query, projection=projection).sort([(START, sort_dirt)],):
             data = self._read_bucket(b, column_set, column_dtypes,
                                      multiple_symbols or (columns is not None and 'SYMBOL' in columns),
                                      include_images, columns)
