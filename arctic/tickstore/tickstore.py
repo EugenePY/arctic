@@ -378,6 +378,9 @@ class TickStore(object):
             rtn = rtn.loc[date_range.start:date_range.end]
         return rtn
 
+    def _cast_rtn_to_dataframe(self, rtn):
+        ...
+
     def read_metadata(self, symbol):
         """
         Read metadata for the specified symbol
